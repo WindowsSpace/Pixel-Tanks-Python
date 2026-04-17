@@ -1,12 +1,12 @@
 import pygame
 from settings import WIDTH, HEIGHT, BACKGROUND_COLOR
-from assets import BACKGROUND_IMG
+import assets
 from save_load import load_game
 
 SLOT_COUNT = 3
 
 class MainMenu:
-    def __init__(self, screen: pygame.Surface, font: pygame.font.Font):
+    def __init__(self, screen, font):
         self.screen = screen
         self.font = font
         self.selected_slot = 1  # 1..3
@@ -46,7 +46,7 @@ class MainMenu:
     def draw(self):
         # Рисуем то же поле
         self.screen.fill(BACKGROUND_COLOR)
-        self.screen.blit(BACKGROUND_IMG, (0, 0))
+        self.screen.blit(assets.BACKGROUND_IMG, (0, 0))
 
         title_surf = self.font.render("TANK GAME - MENU", True, (255, 255, 255))
         title_rect = title_surf.get_rect(center=(WIDTH // 2, 80))

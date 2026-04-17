@@ -17,7 +17,7 @@ DIRECTION_TO_NAME = {
 NAME_TO_DIRECTION = {v: k for k, v in DIRECTION_TO_NAME.items()}
 
 
-def save_game(slot: int, player, enemy_manager):
+def save_game(slot, player, enemy_manager):
     # Сохраняет игру в указанный слот (1..3)
     data = {
         "player": {
@@ -42,7 +42,7 @@ def save_game(slot: int, player, enemy_manager):
         json.dump(data, f, ensure_ascii=False, indent=2)
 
 
-def load_game(slot: int):
+def load_game(slot):
     # Загружает данные слота
     filepath = SAVE_DIR / f"slot_{slot}.json"
     if not filepath.exists():

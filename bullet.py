@@ -4,7 +4,7 @@ from grid import in_bounds
 from settings import BOARD_WIDTH, BOARD_HEIGHT, CELL_SIZE, OFFSET_X, OFFSET_Y
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, owner:pygame.sprite.Sprite, direction:tuple[int, int], image:pygame.Surface | None = None):
+    def __init__(self, owner, direction, image = None):
         super().__init__()
 
         if image is None:
@@ -30,16 +30,11 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.x += self.dir_x * self.speed
         self.rect.y += self.dir_y * self.speed
 
-        # Проверяем выход за поле (по пикселям)
+        # Проверка выход за поле (по пикселям)
         left_limit = OFFSET_X
         right_limit = OFFSET_X + BOARD_WIDTH * CELL_SIZE
         top_limit = OFFSET_Y
         bottom_limit = OFFSET_Y + BOARD_HEIGHT * CELL_SIZE
 
-        if (
-            self.rect.right < left_limit or
-            self.rect.left > right_limit or
-            self.rect.bottom < top_limit or
-            self.rect.top > bottom_limit
-        ):
+        if (self.rect.right < left_limit or self.rect.left > right_limit or self.rect.bottom < top_limit or self.rect.top > bottom_limit):
             self.kill()

@@ -3,7 +3,7 @@ from settings import DIR_TO_ANGLE, DIR_UP, DIR_DOWN, DIR_LEFT, DIR_RIGHT, BOARD_
 from grid import grid_to_pixel_center, in_bounds
 
 class Tank(pygame.sprite.Sprite):
-    def __init__(self, gx: int, gy: int, base_image: pygame.Surface):
+    def __init__(self, gx, gy, base_image):
         super().__init__()
         self.base_image = base_image
         self.image = self.base_image.copy()
@@ -30,12 +30,12 @@ class Tank(pygame.sprite.Sprite):
         # Обновление позиции в пикселях на основе координат сетки
         self.rect.centerx, self.rect.centery = grid_to_pixel_center(self.grid_x, self.grid_y)
 
-    def set_direction(self, direction: tuple[int, int]):
+    def set_direction(self, direction):
         self.direction = direction
         self.angle = DIR_TO_ANGLE[self.direction]
         self.update_image()
 
-    def can_move_to(self, gx: int, gy: int, collision_group=None) -> bool:
+    def can_move_to(self, gx, gy, collision_group = None):
         # Проверка: можно ли зайти в клетку (границы + коллизия с другими танками).
         if not in_bounds(gx, gy):
             return False
@@ -52,7 +52,7 @@ class Tank(pygame.sprite.Sprite):
             self.rect.center = old_center
         return True
 
-    def move_step(self, collision_group=None) -> bool:
+    def move_step(self, collision_group = None) -> bool:
         # Шаг на одну клетку в текущем направлении. Возвращает True, если шаг выполнен.
         dx, dy = self.direction
         new_x = self.grid_x + dx
@@ -67,11 +67,11 @@ class Tank(pygame.sprite.Sprite):
 
 
 class PlayerTank(Tank):
-    def __init__(self, gx: int, gy: int, base_image: pygame.Surface):
+    def __init__(self, gx, gy, base_image):
         super().__init__(gx, gy, base_image)
 
         # Для логики зажатой кнопки
-        self.current_move_dir: tuple[int, int] | None = None
+        self.current_move_dir = None
         self.key_held = False
         self.time_since_last_step = 0
         self.has_turned_for_current_dir = False
@@ -89,7 +89,7 @@ class PlayerTank(Tank):
             self.set_direction(direction)
             self.has_turned_for_current_dir = True  # повернулись, следующий шаг будет через задержку
 
-    def handle_keyup(self, direction: tuple[int, int]):
+    def handle_keyup(self, direction):
         # При отпускании клавиши направления (если это текущая).
         if self.current_move_dir == direction:
             self.key_held = False
@@ -97,7 +97,7 @@ class PlayerTank(Tank):
             self.time_since_last_step = 0
             self.has_turned_for_current_dir = False
 
-    def update_movement(self, dt_ms: int, collision_group=None):
+    def update_movement(self, dt_ms, collision_group = None):
         # Обновление движения при зажатой кнопке.
         # dt_ms — миллисекунд с прошлого кадра.
         if not self.key_held or self.current_move_dir is None:
@@ -121,5 +121,5 @@ class PlayerTank(Tank):
                 self.current_move_dir = None
 
 class EnemyTank(Tank):
-    def __init__(self, gx: int, gy: int, base_image: pygame.Surface):
+    def __init__(self, gx, gy, base_image):
         super().__init__(gx, gy, base_image)

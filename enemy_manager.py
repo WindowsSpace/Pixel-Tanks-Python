@@ -6,7 +6,7 @@ from grid import grid_to_pixel_center, in_bounds
 from tank import EnemyTank
 
 class EnemyManager:
-    def __init__(self, enemy_image: pygame.Surface, enemies_group: pygame.sprite.Group, all_sprites_group: pygame.sprite.Group, player: pygame.sprite.Sprite):
+    def __init__(self, enemy_image, enemies_group, all_sprites_group, player):
         self.enemy_image = enemy_image
         self.enemies_group = enemies_group
         self.all_sprites_group = all_sprites_group
@@ -52,9 +52,9 @@ class EnemyManager:
         self.all_sprites_group.add(enemy)
         self.total_spawned += 1
 
-    def enemy_destroyed(self, enemy: EnemyTank):
+    def enemy_destroyed(self, enemy):
         self.total_destroyed += 1
         enemy.kill()
 
-    def is_level_completed(self) -> bool:
+    def is_level_completed(self):
         return self.total_destroyed >= TOTAL_ENEMIES_TO_DESTROY

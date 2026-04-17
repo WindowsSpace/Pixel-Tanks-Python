@@ -2,25 +2,25 @@ import pygame
 import time
 
 from settings import WIDTH, HEIGHT, BACKGROUND_COLOR, PLAYER_MOVE_KEYS, PLAYER_SHOOT_KEYS, PLAYER_START_GRID
-from assets import PLAYER_BASE_IMG, ENEMY_BASE_IMG, BACKGROUND_IMG, PAUSE_IMG
+import assets 
 from tank import PlayerTank, EnemyTank
 from bullet import Bullet
 from enemy_manager import EnemyManager
 from menu import MainMenu
-from save_load import save_game, load_game
+from save_load import save_game, load_game, NAME_TO_DIRECTION
 
 LONG_ESC_MS = 800  # сколько держать ESC для выхода с сохранением
 
-def create_new_game(slot: int):
+def create_new_game(slot):
     all_sprites = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
     enemies = pygame.sprite.Group()
 
-    player = PlayerTank(PLAYER_START_GRID[0], PLAYER_START_GRID[1], PLAYER_BASE_IMG)
+    player = PlayerTank(PLAYER_START_GRID[0], PLAYER_START_GRID[1], assets.PLAYER_BASE_IMG)
     all_sprites.add(player)
 
     enemy_manager = EnemyManager(
-        enemy_image=ENEMY_BASE_IMG,
+        enemy_image=assets.ENEMY_BASE_IMG,
         enemies_group=enemies,
         all_sprites_group=all_sprites,
         player=player,
@@ -37,7 +37,7 @@ def create_new_game(slot: int):
     }
 
 
-def load_game_into_slot(slot: int):
+def load_game_into_slot(slot):
     # загрузить сохранённые данные, если есть
     state = create_new_game(slot)
     data = load_game(slot)
@@ -52,19 +52,19 @@ def load_game_into_slot(slot: int):
     # Восстановление игрока
     player.grid_x = data["player"]["grid_x"]
     player.grid_y = data["player"]["grid_y"]
-    from settings import NAME_TO_DIRECTION  # можно перенести в save_load.py
+    
     direction_name = data["player"].get("direction", "up")
     player.set_direction(NAME_TO_DIRECTION.get(direction_name, NAME_TO_DIRECTION["up"]))
     player.update_position()
 
     # Враги
-    from settings import NAME_TO_DIRECTION as N2D
+    
     for e_data in data.get("enemies", []):
         ex = e_data["grid_x"]
         ey = e_data["grid_y"]
         dname = e_data.get("direction", "up")
-        enemy = EnemyTank(ex, ey, ENEMY_BASE_IMG)
-        enemy.set_direction(N2D.get(dname, N2D["up"]))
+        enemy = EnemyTank(ex, ey, assets.ENEMY_BASE_IMG)
+        enemy.set_direction(NAME_TO_DIRECTION.get(dname, NAME_TO_DIRECTION["up"]))
         enemy.update_position()
         enemies.add(enemy)
         all_sprites.add(enemy)
@@ -74,24 +74,26 @@ def load_game_into_slot(slot: int):
 
     return state
 
-
 def main():
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     pygame.display.set_caption("Tank Game")
+
+    assets.convert_assets()
 
     clock = pygame.time.Clock()
     font = pygame.font.SysFont("arial", 28)
 
     # Состояние
     app_state = "menu"  # "menu" или "playing"
-    menu = MainMenu(screen, font)
 
     game_state = None  # словарь из create_new_game/load_game_into_slot
     esc_down_time = None
 
+    menu = MainMenu(screen, font)
+
     # Подготовим rect для спрайта паузы
-    pause_rect = PAUSE_IMG.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    pause_rect = assets.PAUSE_IMG.get_rect(center=(WIDTH // 2, HEIGHT // 2))
 
     running = True
     while running:
@@ -190,11 +192,11 @@ def main():
 
         # Рендер игры
         screen.fill(BACKGROUND_COLOR)
-        screen.blit(BACKGROUND_IMG, (0, 0))
+        screen.blit(assets.BACKGROUND_IMG, (0, 0))
         all_sprites.draw(screen)
 
         if game_state["paused"]:
-            screen.blit(PAUSE_IMG, pause_rect)
+            screen.blit(assets.PAUSE_IMG, pause_rect)
 
         pygame.display.flip()
 
