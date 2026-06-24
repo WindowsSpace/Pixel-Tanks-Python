@@ -1,40 +1,36 @@
 import pygame
-from settings import BULLET_SPEED
-from grid import in_bounds
-from settings import BOARD_WIDTH, BOARD_HEIGHT, CELL_SIZE, OFFSET_X, OFFSET_Y
+from settings import CELL_SIZE
+from grid import in_bounds, grid_to_pixel_center
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, owner, direction, image = None):
+    def __init__(self, owner, direction, image=None, is_player=True) -> None:
         super().__init__()
-
-        if image is None:
-            self.image = pygame.Surface((CELL_SIZE // 3, CELL_SIZE // 3), pygame.SRCALPHA)
-            self.image.fill((255, 255, 255))
-        else:
-            self.image = image
-
+        self.is_player = is_player
+        self.image = image if image else pygame.Surface((CELL_SIZE // 3, CELL_SIZE // 3), pygame.SRCALPHA)
         self.rect = self.image.get_rect()
-
+        self.hitbox = self.rect.copy() 
         self.dir_x, self.dir_y = direction
-        self.speed = BULLET_SPEED
+        
+        self.grid_x = owner.grid_x + self.dir_x * 2
+        self.grid_y = owner.grid_y + self.dir_y * 2
 
-        # Стартовая позиция перед танка
-        tank_center_x = owner.rect.centerx
-        tank_center_y = owner.rect.centery
-        offset_pixels = CELL_SIZE // 2
-        start_x = tank_center_x + self.dir_x * offset_pixels
-        start_y = tank_center_y + self.dir_y * offset_pixels
-        self.rect.center = (start_x, start_y)
+        self.move_timer = 0
+        self.step_delay = 90
 
-    def update(self):
-        self.rect.x += self.dir_x * self.speed
-        self.rect.y += self.dir_y * self.speed
+        self.update_position()
 
-        # Проверка выход за поле (по пикселям)
-        left_limit = OFFSET_X
-        right_limit = OFFSET_X + BOARD_WIDTH * CELL_SIZE
-        top_limit = OFFSET_Y
-        bottom_limit = OFFSET_Y + BOARD_HEIGHT * CELL_SIZE
+    def update_position(self) -> None:
+        cx, cy = grid_to_pixel_center(self.grid_x, self.grid_y)
+        self.rect.center = (cx, cy)
+        self.hitbox.center = (cx, cy)
 
-        if (self.rect.right < left_limit or self.rect.left > right_limit or self.rect.bottom < top_limit or self.rect.top > bottom_limit):
+    def update(self, dt_ms) -> None:
+        self.move_timer += dt_ms
+        if self.move_timer >= self.step_delay:
+            self.move_timer = 0
+            self.grid_x += self.dir_x
+            self.grid_y += self.dir_y
+            self.update_position()
+
+        if not in_bounds(self.grid_x, self.grid_y):
             self.kill()
