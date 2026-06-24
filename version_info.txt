@@ -1,0 +1,31 @@
+# UTF-8
+#
+# Документация по FixedFileInfo: http://msdn.microsoft.com/en-us/library/ms646997.aspx
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(0, 1, 0, 0),       # версия файла (FileVersion)
+    prodvers=(0, 1, 0, 0),       # версия продукта (ProductVersion)
+    mask=0x3f,                   # битовая маска
+    flags=0x0,                   # флаги
+    OS=0x40004,                  # NT/2000/XP и выше
+    fileType=0x1,                # тип файла: 1 = приложение
+    subtype=0x0,                 # подтип
+    date=(3510982656, 941761296) # дата сборки (0,0 – не задана)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        u'040904B0',             # язык: английский США (0x0409), кодировка Unicode (1200)
+        [StringStruct(u'CompanyName', u'WS'),
+         StringStruct(u'FileDescription', u'Pixel Tanks'),
+         StringStruct(u'FileVersion', u'0.1.0.0'),
+         StringStruct(u'InternalName', u'Tanki'),
+         StringStruct(u'LegalCopyright', u'Copyright (C) 2026 Windows Space'),
+         StringStruct(u'OriginalFilename', u'Tanki.exe'),
+         StringStruct(u'ProductName', u'Tanki'),
+         StringStruct(u'ProductVersion', u'0.1.0.0')])
+      ]),
+    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
+  ]
+)

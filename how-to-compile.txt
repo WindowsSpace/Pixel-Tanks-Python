@@ -1,0 +1,1 @@
+pyinstaller --onefile --noconsole --icon=tank-icon.ico --name=Tanki --version-file=version_info.txt game.py
