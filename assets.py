@@ -42,21 +42,21 @@ def scale_icon_in_place(surface, scale_factor):
 
     return new_surface
 
-_PLAYER_IMG_RAW = load_surface_safe('sprites/player.png')
-_ENEMY_IMG_RAW = load_surface_safe('sprites/enemy.png')
-_BULLET_IMG_RAW = load_surface_safe('sprites/pixel.png')
-_BACKGROUND_IMG_RAW = load_surface_safe('sprites/background.png')
+_PLAYER_IMG_RAW = load_surface_safe('assets/sprites/player.png')
+_ENEMY_IMG_RAW = load_surface_safe('assets/sprites/enemy.png')
+_BULLET_IMG_RAW = load_surface_safe('assets/sprites/pixel.png')
+_BACKGROUND_IMG_RAW = load_surface_safe('assets/sprites/menu/background.png')
 
-_PAUSE_IMG_RAW = load_surface_safe('sprites/pause.png')
-_SOUNDS_IMG_RAW = load_surface_safe('sprites/sounds.png')
+_PAUSE_IMG_RAW = load_surface_safe('assets/sprites/menu/pause.png')
+_SOUNDS_IMG_RAW = load_surface_safe('assets/sprites/menu/sounds.png')
 
-_SLOT_IMG_RAW = load_surface_safe('sprites/slot.png')
-_NUM1_IMG_RAW = load_surface_safe('sprites/1.png')
-_NUM2_IMG_RAW = load_surface_safe('sprites/2.png')
-_NUM3_IMG_RAW = load_surface_safe('sprites/3.png')
+_SLOT_IMG_RAW = load_surface_safe('assets/sprites/menu/slot.png')
+_NUM1_IMG_RAW = load_surface_safe('assets/sprites/menu/1.png')
+_NUM2_IMG_RAW = load_surface_safe('assets/sprites/menu/2.png')
+_NUM3_IMG_RAW = load_surface_safe('assets/sprites/menu/3.png')
 
-_TRANSITIONS_RAW = [load_surface_safe(f'sprites/animation/transition{i}.png') for i in range(1, 11)]
-_EXPLOSIONS_RAW = [load_surface_safe(f'sprites/animation/explosion{i}.png', (172, 172)) for i in range(1, 3)]
+_TRANSITIONS_RAW = [load_surface_safe(f'assets/sprites/animations/transitions/transition{i}.png') for i in range(1, 11)]
+_EXPLOSIONS_RAW = [load_surface_safe(f'assets/sprites/animations/explosion/explosion{i}.png', (172, 172)) for i in range(1, 3)]
 
 # Глобальные переменные изображений
 PLAYER_BASE_IMG, ENEMY_BASE_IMG = None, None
@@ -106,15 +106,15 @@ def convert_assets() -> None:
     EXPLOSION_IMGS = [e.convert_alpha() for e in _EXPLOSIONS_RAW]
 
     pygame.mixer.init()
-    if os.path.exists('sounds/shoot.ogg'):
-        PLAYER_SHOOT_SOUND = pygame.mixer.Sound('sounds/shoot.ogg')
-    if os.path.exists('sounds/explosion.ogg'):
-        EXPLOSION_SOUND = pygame.mixer.Sound('sounds/explosion.ogg')
-    if os.path.exists('sounds/Evynt_Otsilka.wav'):
-        EVENT_SOUND = pygame.mixer.Sound('sounds/Evynt_Otsilka.wav')
+    if os.path.exists('assets/sounds/shoot.ogg'):
+        PLAYER_SHOOT_SOUND = pygame.mixer.Sound('assets/sounds/shoot.ogg')
+    if os.path.exists('assets/sounds/explosion.ogg'):
+        EXPLOSION_SOUND = pygame.mixer.Sound('assets/sounds/explosion.ogg')
+    if os.path.exists('assets/sounds/Evynt_Otsilka.wav'):
+        EVENT_SOUND = pygame.mixer.Sound('assets/sounds/Evynt_Otsilka.wav')
 
     try:
-        CUSTOM_FONT = pygame.font.Font('font/DS-DIGII.TTF', 40)
+        CUSTOM_FONT = pygame.font.Font('assets/font/DS-DIGII.TTF', 40)
     except FileNotFoundError:
         CUSTOM_FONT = pygame.font.SysFont("arial", 40, bold=True)
 
