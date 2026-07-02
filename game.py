@@ -1,7 +1,12 @@
 import pygame
 import random
 
-from settings import WIDTH, HEIGHT, BACKGROUND_COLOR, PLAYER_SPAWN_POINTS, HUD_START_X, HUD_BOARD_Y, CELL_SIZE, OFFSET_X, OFFSET_Y, BOARD_WIDTH, BOARD_HEIGHT
+from settings import WIDTH, HEIGHT, \
+    BACKGROUND_COLOR, PLAYER_SPAWN_POINTS, \
+    HUD_START_X, HUD_BOARD_Y, \
+    CELL_SIZE, OFFSET_X, OFFSET_Y, \
+    BOARD_WIDTH, BOARD_HEIGHT, \
+    PLAYER_MOVE_KEYS, PLAYER_SHOOT_KEYS
 import assets 
 from tank import PlayerTank, EnemyTank
 from bullet import Bullet
@@ -113,7 +118,7 @@ def get_menu_stats(slot):
     }
 
 def hitbox_collide(sprite1, sprite2):
-    return sprite1.hitbox.colliderect(sprite2.hitbox)
+    return pygame.sprite.collide_mask(sprite1, sprite2) is not None
 
 def render_text(screen, font, text, y_offset) -> None:
     surf = font.render(text, True, (0, 0, 0))
@@ -144,7 +149,7 @@ def main() -> None:
 
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_icon(pygame.image.load("sprites/tank-icon.png"))
+    pygame.display.set_icon(pygame.image.load("assets/sprites/tank-icon.png"))
     pygame.display.set_caption("Pixel Tanks")
     pygame.mouse.set_visible(False)
     assets.convert_assets()
@@ -277,17 +282,18 @@ def main() -> None:
                 if not game_state["paused"]:
                     player = game_state["player"]
                     if event.type == pygame.KEYDOWN:
-                        from settings import PLAYER_MOVE_KEYS, PLAYER_SHOOT_KEYS
                         if event.key in PLAYER_MOVE_KEYS:
-                            player.handle_keydown(PLAYER_MOVE_KEYS[event.key])
+                            player.handle_keydown(PLAYER_MOVE_KEYS[event.key], game_state["enemies"])
                         if event.key in PLAYER_SHOOT_KEYS:
-                            bullet = Bullet(player, player.direction, assets.BULLET_IMG_RAW, is_player=True)
-                            game_state["bullets"].add(bullet)
-                            game_state["all_sprites"].add(bullet)
-                            assets.play_sound(assets.PLAYER_SHOOT_SOUND, game_state["sounds_enabled"])
+                            # Считаем, сколько пуль игрока сейчас летит по полю и если их меньше 4, то производим выстрел
+                            active_player_bullets = sum(1 for b in game_state["bullets"] if b.is_player)
+                            if active_player_bullets < 4:
+                                bullet = Bullet(player, player.direction, assets.BULLET_IMG_RAW, is_player=True)
+                                game_state["bullets"].add(bullet)
+                                game_state["all_sprites"].add(bullet)
+                                assets.play_sound(assets.PLAYER_SHOOT_SOUND, game_state["sounds_enabled"])
 
                     if event.type == pygame.KEYUP:
-                        from settings import PLAYER_MOVE_KEYS
                         if event.key in PLAYER_MOVE_KEYS:
                             player.handle_keyup(PLAYER_MOVE_KEYS[event.key])
         
