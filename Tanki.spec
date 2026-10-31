@@ -2,7 +2,7 @@
 
 
 a = Analysis(
-    ['game.py'],
+    ['src\\app.py'],
     pathex=[],
     binaries=[],
     datas=[],
@@ -36,5 +36,5 @@ exe = EXE(
     codesign_identity=None,
     entitlements_file=None,
     version='version_info.txt',
-    icon=['tank-icon.ico'],
+    icon=['assets\\PT64ALT.ico'],
 )
